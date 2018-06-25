@@ -1,0 +1,9 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../builds/nwx-gtag",
+  "lib": {
+    "flatModuleFile": "nwx-gtag",
+    "entryFile": "index.ts",
+    "umdModuleIds": {}
+  }
+}
