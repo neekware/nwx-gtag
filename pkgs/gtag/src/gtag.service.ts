@@ -34,8 +34,8 @@ export class GtagService {
   ) {
     this.options = merge({ gtag: DefaultGtagCfg }, cfg.options);
     if (this.options.gtag.trackingId) {
-      this.initScript().then(ignore => {
-        this.loadScript().then(ignore => {
+      this.initScript().then(() => {
+        this.loadScript().then(() => {
           log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
         });
       });

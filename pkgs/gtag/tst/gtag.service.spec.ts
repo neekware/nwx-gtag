@@ -7,6 +7,7 @@
  */
 
 import { TestBed, inject } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { isMatch } from 'lodash';
 
@@ -16,11 +17,10 @@ import { LogModule } from '@nwx/logger';
 import { GtagModule } from '../src/gtag.module';
 import { GtagService } from '../src/gtag.service';
 
-
 describe('GtagService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [CfgModule.forRoot(), LogModule, GtagModule]
+      imports: [RouterTestingModule, CfgModule.forRoot(), LogModule, GtagModule]
     });
   });
 
