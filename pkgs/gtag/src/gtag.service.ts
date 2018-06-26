@@ -109,18 +109,26 @@ export class GtagService {
       },
       ...params
     };
-    try {
-      gtag('config', this.options.gtag.trackingId, params);
-    } catch (err) {
-      this.log.error('Failed to track page view', err);
+    if (typeof gtag === 'function') {
+      try {
+        gtag('config', this.options.gtag.trackingId, params);
+      } catch (err) {
+        this.log.error('Failed to track page view', err);
+      }
+    } else {
+      this.log.debug('skip page track. gtag not ready yet ...');
     }
   }
 
   trackEvent(name: string, params: GtagEventParams = {}) {
-    try {
-      gtag('event', name, params);
-    } catch (err) {
-      console.error('Failed to track event', err);
+    if (typeof gtag === 'function') {
+      try {
+        gtag('event', name, params);
+      } catch (err) {
+        console.error('Failed to track event', err);
+      }
+    } else {
+      this.log.debug('skip event track. gtag not ready yet ...');
     }
   }
 }
