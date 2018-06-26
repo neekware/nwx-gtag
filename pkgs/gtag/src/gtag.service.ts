@@ -7,134 +7,112 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 import { get, merge } from 'lodash';
-import { Base64 } from 'js-base64';
+import { tap, filter, map, switchMap } from 'rxjs/operators';
 import { CfgService, AppCfg } from '@nwx/cfg';
 import { LogService } from '@nwx/logger';
 
 import { DefaultGtagCfg } from './gtag.defaults';
 import { GtagModule } from './gtag.module';
+import { GtagPageViewParams } from './gtag.types';
 
-/**
- * An injectable class that handles GTAG service
- */
+declare var gtag: Function;
+
 @Injectable({
   providedIn: 'root'
 })
 export class GtagService {
-  private _options: AppCfg = null;
+  options: AppCfg = null;
 
-  /**
-   * Class constructor
-   * @param options an optional configuration object
-   */
-  constructor(private cfg: CfgService, private log: LogService) {
-    this._options = merge({ gtag: DefaultGtagCfg }, cfg.options);
-    this.log.debug('GtagService ready ...');
-  }
-
-  /**
-   * Gets the payload portion of a GTAG token
-   * @param token GTAG token (base64 encrypted)
-   * @returns a payload object or null if decode fails
-   */
-  getPayload(token: string): any {
-    let parts = [];
-
-    try {
-      parts = token.split('.');
-      if (parts.length !== 3) {
-        throw Error('GTAG must have 3 parts');
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private cfg: CfgService,
+    private log: LogService
+  ) {
+    this.options = merge({ gtag: DefaultGtagCfg }, cfg.options);
+    if (this.options.gtag.trackingId) {
+      this.initScript().then(ignore => {
+        this.loadScript().then(ignore => {
+          log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
+        });
+      });
+      if (this.options.gtag.autoPageView) {
+        this.enablePageView();
       }
-    } catch (e) {
-      this.log.error(e.message);
-      return null;
     }
-
-    try {
-      const decoded = Base64.decode(parts[1]);
-      const payload = JSON.parse(decoded);
-      return payload;
-    } catch (e) {
-      this.log.error('Cannot decode the token');
-    }
-
-    return null;
   }
 
-  /**
-   * Tells if a GTAG is token is expired
-   * @param payload GTAG payload object
-   * @return true if GTAG is already expired, else false
-   */
-  isExpired(payload: any): boolean {
-    if (typeof payload === 'string') {
-      payload = this.getPayload(payload);
-    }
-    if (payload) {
-      const offset = (parseInt(payload.lee, 10) || this._options.gtag.expiryLeeway) * 1000;
-      const now = this.utcSeconds();
-      const expiry = this.utcSeconds(payload.exp);
-      const expired = now > expiry + offset;
-      return expired;
-    }
-    return true;
+  private initScript(): Promise<any> {
+    return new Promise(resolve => {
+      const tag = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${this.options.GoogleAnalyticsId}', { 'send_page_view': ${
+        this.options.gtag.autoPageView
+      } });
+      `;
+      const elNode = Object.assign(document.createElement('script'), {
+        text: tag,
+        onload: resolve
+      });
+      document.body.appendChild(elNode);
+    });
   }
 
-  /**
-   * Calculates the next refresh time
-   * @param payload GTAG payload object
-   * @param offset if true, a random time is added to the refresh time
-   * where networkDelay < random < leeway
-   * @returns total number of seconds till expiry or 0 if token is expired
-   */
-  getRefreshTime(payload: any, offset = true): number {
-    if (typeof payload === 'string') {
-      payload = this.getPayload(payload);
-    }
-    if (payload && !this.isExpired(payload)) {
-      const now = this.utcSeconds();
-      const expiry = this.utcSeconds(payload.exp);
-      const refresh = Math.floor((expiry - now) / 1000);
-      const random = this.getRandomOffset(payload);
-      const time = offset ? refresh + random : refresh;
-      return time;
-    }
-    return 0;
+  private loadScript(): Promise<any> {
+    return new Promise(resolve => {
+      const url = `${this.options.gtagUrl}?id=${this.options.GoogleAnalyticsId}`;
+      if (document.querySelectorAll(`[src="${url}"]`).length) {
+        resolve();
+      } else {
+        const elNode = Object.assign(document.createElement('script'), {
+          type: 'text/javascript',
+          src: url,
+          onload: resolve
+        });
+        document.body.appendChild(elNode);
+      }
+    });
   }
 
-  /**
-   * Calculates a random number where networkDelay < random < leeway
-   * @param payload GTAG payload object
-   * @returns a random total number of seconds
-   */
-  private getRandomOffset(payload: any): number {
-    if (typeof payload === 'string') {
-      payload = this.getPayload(payload);
-    }
-    const leeway = get(
-      payload,
-      'leeway',
-      get(payload, 'lee', this._options.gtag.expiryLeeway)
-    );
-    const range = {
-      lower: 1,
-      upper: leeway - this._options.gtag.networkDelay || 2
+  private enablePageView() {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        tap(event => {
+          this.pageView();
+        })
+      )
+      .subscribe();
+  }
+
+  pageView(params?: GtagPageViewParams) {
+    params = {
+      ...{
+        page_path: this.router.url,
+        page_location: window.location.href,
+        page_title: this.getTitle() || this.options.appName
+      },
+      ...params
     };
-    return Math.floor(Math.random() * range.upper + range.lower);
+    try {
+      gtag('config', this.options.gtag.trackingId, params);
+    } catch (err) {
+      this.log.error('Failed to track page view', err);
+    }
   }
 
-  /**
-   * Calculates the UTC value of date/time in seconds
-   * @param input date/time in seconds
-   * @returns UTC value of date/time in seconds
-   */
-  private utcSeconds(input?: number): number {
-    return input ? new Date(0).setUTCSeconds(input).valueOf() : new Date().valueOf();
-  }
-
-  get options() {
-    return this._options;
+  getTitle() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => this.route),
+      map(route => route.firstChild),
+      switchMap(route => route.data),
+      map(data => get(data, 'title'))
+    );
   }
 }

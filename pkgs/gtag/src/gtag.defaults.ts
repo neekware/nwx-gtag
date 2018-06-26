@@ -8,12 +8,11 @@
 
 import { GtagCfg } from './gtag.types';
 
-/**
- * Default configuration - GTAG module
- */
 export const DefaultGtagCfg: GtagCfg = {
-  // google gtag id
-  gtagId: null,
-  // track page view on automatically on start
-  pageView: false
+  // google tracking id (UA-XXXXX-Y)
+  trackingId: null,
+  // track page view on start
+  autoPageView: false,
+  // gtag.js url
+  gtagUrl: 'https://www.googletagmanager.com/gtag/js'
 };

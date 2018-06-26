@@ -6,12 +6,30 @@
  * found in the LICENSE file at http://neekware.com/license/MIT.html
  */
 
-/**
- * GTAG config declaration
- */
 export class GtagCfg {
-  // google gtag id
-  gtagId: string;
-  // track page view on automatically on start
-  pageView?: boolean;
+  // google tracking id (UA-XXXXX-Y)
+  trackingId: string;
+  // track page view on start
+  autoPageView?: boolean;
+  // tracking gtag.js URL
+  gtagUrl?: string;
+}
+
+// https://developers.google.com/analytics/devguides/collection/gtagjs/pages
+export class GtagPageViewParams {
+  // title of the page
+  page_title?: string;
+  // uri portion of the page location starting with /
+  page_path?: string;
+  // page_location	string	No	The page's URL.
+  page_location?: string;
+  // more optional future parameters
+  [key: string]: any;
+}
+
+export interface GtagEventParams {
+  event_category?: string;
+  event_label?: string;
+  value?: any;
+  [key: string]: any;
 }

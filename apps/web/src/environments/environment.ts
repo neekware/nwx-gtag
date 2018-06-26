@@ -13,7 +13,9 @@ export const environment: AppCfg = {
     level: LogLevels.debug
   },
   gtag: {
-    gtagId: null,
-    pageView: false
+    // google tracking id (UA-XXXXX-Y)
+    trackingId: null,
+    // track page view on start
+    autoPageView: false
   }
 };

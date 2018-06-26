@@ -11,9 +11,6 @@ import { CommonModule } from '@angular/common';
 
 import { GtagService } from './gtag.service';
 
-/**
- * GTAG module class
- */
 @NgModule({
   imports: [CommonModule]
 })
