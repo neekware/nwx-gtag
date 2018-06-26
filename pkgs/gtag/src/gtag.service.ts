@@ -43,39 +43,31 @@ export class GtagService {
     }
   }
 
-  private initScript(): Promise<any> {
-    return new Promise(resolve => {
-      const tag = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${this.options.gtag.trackingId}', { 'send_page_view': ${
-        this.options.gtag.autoPageTrack
-      } });
-      `;
-      const elNode = Object.assign(document.createElement('script'), {
-        text: tag,
-        onload: resolve
-      });
-      document.body.appendChild(elNode);
+  private initScript() {
+    const id = this.options.gtag.trackingId;
+    const enabled = this.options.gtag.autoPageTrack;
+    const tag = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${id}', { 'send_page_view': ${enabled} });
+    `;
+    const elNode = Object.assign(document.createElement('script'), {
+      text: tag
     });
+    document.body.appendChild(elNode);
   }
 
-  private loadScript(): Promise<any> {
-    return new Promise(resolve => {
-      const url = `${this.options.gtag.gtagUrl}?id=${this.options.gtag.trackingId}`;
-      if (document.querySelectorAll(`[src="${url}"]`).length) {
-        resolve();
-      } else {
-        const elNode = Object.assign(document.createElement('script'), {
-          type: 'text/javascript',
-          src: url,
-          async: true,
-          onload: resolve
-        });
-        document.body.appendChild(elNode);
-      }
-    });
+  private loadScript() {
+    const url = `${this.options.gtag.gtagUrl}?id=${this.options.gtag.trackingId}`;
+    if (!document.querySelectorAll(`[src="${url}"]`).length) {
+      const elNode = Object.assign(document.createElement('script'), {
+        type: 'text/javascript',
+        src: url,
+        async: true
+      });
+      document.body.appendChild(elNode);
+    }
   }
 
   private enablePageView() {
