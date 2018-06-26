@@ -25,16 +25,16 @@ export const environment: AppCfg = {
   // target (browser, mobile, desktop)
   target: TargetPlatform.web,
   // production, staging or development
-  production: false,
+  production: true,
   log: {
     // log level (application-wide)
     level: LogLevels.debug
   },
   gtag: {
-    // estimate time of http request between client -> server (greater than zero)
-    networkDelay: 1,
-    // few seconds to make the randomizer work. backend can overwrite
-    expiryLeeway: 5
+    // google tracking ID for domain
+    trackingId: 'UA-XXXXXX-Y',
+    // track page view on start (on route changes)
+    autoPageTrack: true
   }
 };
 ```
@@ -62,7 +62,7 @@ export class AppModule {}
 ```
 
 ```typescript
-// In your app.module.ts
+// In your app.component.ts
 
 import { Component } from '@angular/core';
 import { CfgService, DefaultCfg } from '@nwx/cfg';
@@ -79,17 +79,44 @@ export class AppComponent {
   constructor(public cfg: CfgService, public log: LogService, public gtag: GtagService) {
     this.title = this.cfg.options.appName;
     this.log.info('AppComponent loaded ...');
+    // all route changes are tracked automatically with gtag
+  }
+}
+```
 
-    const someToken = 'some-gtag-token-received-from-server'; // <part-1>.<part-2>.<part-2>
-    const payload = this.gtag.getPayload(someToken);
-    const isExpired = this.gtag.isExpired(payload);
-    if (!isExpired) {
-      const userId = payload.sub;
-      const nextRefresh = this.gtag.getRefreshTime(payload);
-      setTimeout(() => {
-        // connect to the server to get a new token
-      }, nextRefresh * 1000);
-    }
+# Advanced usage
+
+```typescript
+// In your environment{prod,staging}.ts
+
+import { AppCfg, TargetPlatform } from '@nwx/cfg';
+import { LogLevels } from '@nwx/logger';
+
+export const environment: AppCfg = {
+  // ...
+  gtag: {
+    // google tracking ID for domain
+    trackingId: 'UA-XXXXXX-Y',
+    // track page view on start (on route change)
+    autoPageTrack: false
+  }
+};
+```
+
+```typescript
+// In your app.module.ts
+@Component({
+  selector: 'app-root',
+  template: `<h1>Welcome to {{ title }}!</h1>`
+})
+export class AppComponent {
+  title = 'Neekware';
+  options = {};
+  constructor(public cfg: CfgService, public log: LogService, public gtag: GtagService) {
+    this.title = this.cfg.options.appName;
+    this.log.info('AppComponent loaded ...');
+    // automatic page view is disabled
+    // manual page view can be triggered wih gtag.trackPageView()
   }
 }
 ```
