@@ -131,11 +131,10 @@ gtag.trackPageView({
 gtag.trackPageView();
 
 // where defaults are:
-// page_title = [active-route.data.title] | [environment.appName]
 // page_path = router.url
-
+// page_title = [active-route.data.title] | [environment.appName]
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, { title: 'Home page direct' }},
   { path: 'home', component: HomeComponent, data: { title: 'Home page' } }
 ];
 ```
