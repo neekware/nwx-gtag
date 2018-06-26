@@ -116,7 +116,7 @@ export class AppComponent {
     this.title = this.cfg.options.appName;
     this.log.info('AppComponent loaded ...');
     // automatic page view is disabled
-    // manual page view can be triggered wih gtag.trackPageView()
+    // manual page view can be triggered with `gtag.trackPageView()`
   }
 }
 ```
