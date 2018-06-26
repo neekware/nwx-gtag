@@ -9,13 +9,13 @@
 import { GtagModule } from '../src/gtag.module';
 
 describe('GtagModule', () => {
-  let GtagModule: GtagModule;
+  let gtagModule: GtagModule;
 
   beforeEach(() => {
-    GtagModule = new GtagModule();
+    gtagModule = new GtagModule(null);
   });
 
   it('should create an instance', () => {
-    expect(GtagModule).toBeTruthy();
+    expect(gtagModule).toBeTruthy();
   });
 });

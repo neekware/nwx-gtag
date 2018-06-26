@@ -1,10 +1,10 @@
 {
   "name": "@nwx/gtag",
-  "description": "A simple GTAG module for Angular applications",
+  "description": "A simple Google Analytics wrapper module for Angular applications",
   "peerDependencies": {
     "@angular/core": ">=6.0.0",
-    "lodash": "^4.17.5",
-    "@nwx/cfg": "^1.0.3",
-    "@nwx/logger": "^1.0.4"
+    "lodash": ">=4.17.5",
+    "@nwx/cfg": ">=1.0.3",
+    "@nwx/logger": ">=1.0.4"
   }
 }
