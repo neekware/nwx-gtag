@@ -7,14 +7,6 @@ import { GtagService } from 'pkgs/gtag';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: '<router-outlet></router-outlet>'
 })
-export class AppComponent {
-  title = 'Neekware';
-  options = {};
-  constructor(public cfg: CfgService, public log: LogService, public gtag: GtagService) {
-    this.title = this.cfg.options.appName;
-    this.log.info('AppComponent loaded ...');
-  }
-}
+export class AppComponent {}
