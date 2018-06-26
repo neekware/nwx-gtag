@@ -37,11 +37,11 @@ export class GtagService {
       this.loadScript().then(() => {
         this.initScript().then(() => {
           log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
+          if (this.options.gtag.autoPageTrack) {
+            this.enablePageView();
+          }
         });
       });
-      if (this.options.gtag.autoPageTrack) {
-        this.enablePageView();
-      }
     }
   }
 
