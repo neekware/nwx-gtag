@@ -107,8 +107,8 @@ export const environment: AppCfg = {
 ```typescript
 // track page view manually with specific options
 gtag.trackPageView({
-  page_title: 'Home Page',
   page_path: '/',
+  page_title: 'Home Page',
   page_location: 'http://neekware.com'
 });
 
