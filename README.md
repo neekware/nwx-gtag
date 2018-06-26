@@ -80,6 +80,21 @@ export class AppComponent {
     this.title = this.cfg.options.appName;
     this.log.info('AppComponent loaded ...');
     // all route changes are tracked automatically from now on
+    this.trackDetailedEvent();
+    this.trackEvent();
+  }
+
+  trackDetailedEvent() {
+    // example of event with params
+    gtag.trackEvent('home-page', {
+      event_category: 'SEO',
+      event_label: 'Page loaded, anonymous user'
+    });
+  }
+
+  trackEvent() {
+    // example of event without params
+    gtag.trackEvent('home-page-visit');
   }
 }
 ```
