@@ -60,10 +60,5 @@ describe('HomeComponent', () => {
     const options = fixture.debugElement.componentInstance.gtag.options.gtag;
     expect(options.gtagUrl.length).toBeGreaterThan(0);
     expect(options.trackingId).toContain('UA');
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    const url = `${options.gtagUrl}?id=${options.trackingId}`;
-    console.log(compiled)
-    // expect(compiled.querySelectorAll(`[src="${url}"]`).length).toEqual(1);
   }));
 });
