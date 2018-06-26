@@ -93,6 +93,7 @@ import { AppCfg, TargetPlatform } from '@nwx/cfg';
 import { LogLevels } from '@nwx/logger';
 
 export const environment: AppCfg = {
+  appName: '@nwx/gtag',
   // ...
   gtag: {
     // google tracking ID for domain
@@ -115,9 +116,13 @@ gtag.trackPageView({
 gtag.trackPageView();
 
 // where defaults are:
-// page_title = [some_route.data.title] | appName
+// page_title = [active-route.data.title] | [environment.appName]
 // page_path = router.url
 
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent, data: { title: 'Home page' } }
+];
 ```
 
 # Running the tests
