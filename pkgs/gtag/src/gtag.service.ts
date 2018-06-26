@@ -16,7 +16,7 @@ import { LogService } from '@nwx/logger';
 
 import { DefaultGtagCfg } from './gtag.defaults';
 import { GtagModule } from './gtag.module';
-import { GtagPageViewParams } from './gtag.types';
+import { GtagPageViewParams, GtagEventParams } from './gtag.types';
 
 declare var gtag: Function;
 
@@ -84,13 +84,23 @@ export class GtagService {
       .pipe(
         filter(event => event instanceof NavigationEnd),
         tap(event => {
-          this.pageView();
+          this.trackPageView();
         })
       )
       .subscribe();
   }
 
-  pageView(params?: GtagPageViewParams) {
+  getTitle() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => this.route),
+      map(route => route.firstChild),
+      switchMap(route => route.data),
+      map(data => get(data, 'title'))
+    );
+  }
+
+  trackPageView(params?: GtagPageViewParams) {
     params = {
       ...{
         page_path: this.router.url,
@@ -106,13 +116,11 @@ export class GtagService {
     }
   }
 
-  getTitle() {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => this.route),
-      map(route => route.firstChild),
-      switchMap(route => route.data),
-      map(data => get(data, 'title'))
-    );
+  trackEvent(name: string, params: GtagEventParams = {}) {
+    try {
+      gtag('event', name, params);
+    } catch (err) {
+      console.error('Failed to track event', err);
+    }
   }
 }

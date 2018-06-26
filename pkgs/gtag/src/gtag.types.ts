@@ -13,6 +13,8 @@ export class GtagCfg {
   autoPageTrack?: boolean;
   // tracking gtag.js URL
   gtagUrl?: string;
+  // more optional parameters
+  [key: string]: any;
 }
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
@@ -27,6 +29,7 @@ export class GtagPageViewParams {
   [key: string]: any;
 }
 
+// https://developers.google.com/analytics/devguides/collection/gtagjs/events
 export interface GtagEventParams {
   event_category?: string;
   event_label?: string;
