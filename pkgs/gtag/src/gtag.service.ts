@@ -34,14 +34,12 @@ export class GtagService {
   ) {
     this.options = merge({ gtag: DefaultGtagCfg }, this.cfg.options);
     if (this.options.gtag.trackingId) {
-      this.loadScript().then(() => {
-        this.initScript().then(() => {
-          this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
-          if (this.options.gtag.autoPageTrack) {
-            this.enablePageView();
-          }
-        });
-      });
+      this.loadScript();
+      this.initScript();
+      this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
+      if (this.options.gtag.autoPageTrack) {
+        this.enablePageView();
+      }
     }
   }
 
