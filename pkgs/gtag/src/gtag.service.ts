@@ -32,51 +32,42 @@ export class GtagService {
     private cfg: CfgService,
     private log: LogService
   ) {
-    this.options = merge({ gtag: DefaultGtagCfg }, cfg.options);
+    this.options = merge({ gtag: DefaultGtagCfg }, this.cfg.options);
     if (this.options.gtag.trackingId) {
-      this.loadScript().then(() => {
-        this.initScript().then(() => {
-          log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
-        });
-      });
+      this.loadScript();
+      this.initScript();
+      this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
       if (this.options.gtag.autoPageTrack) {
         this.enablePageView();
       }
     }
   }
 
-  private initScript(): Promise<any> {
-    return new Promise(resolve => {
-      const tag = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${this.options.gtag.trackingId}', { 'send_page_view': ${
-        this.options.gtag.autoPageTrack
-      } });
-      `;
-      const elNode = Object.assign(document.createElement('script'), {
-        text: tag,
-        onload: resolve
-      });
-      document.body.appendChild(elNode);
+  private initScript() {
+    const id = this.options.gtag.trackingId;
+    const enabled = this.options.gtag.autoPageTrack;
+    const tag = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${id}', { 'send_page_view': ${enabled} });
+    `;
+    const elNode = Object.assign(document.createElement('script'), {
+      text: tag
     });
+    document.body.appendChild(elNode);
   }
 
-  private loadScript(): Promise<any> {
-    return new Promise(resolve => {
-      const url = `${this.options.gtag.gtagUrl}?id=${this.options.gtag.trackingId}`;
-      if (document.querySelectorAll(`[src="${url}"]`).length) {
-        resolve();
-      } else {
-        const elNode = Object.assign(document.createElement('script'), {
-          type: 'text/javascript',
-          src: url,
-          onload: resolve
-        });
-        document.body.appendChild(elNode);
-      }
-    });
+  private loadScript() {
+    const url = `${this.options.gtag.gtagUrl}?id=${this.options.gtag.trackingId}`;
+    if (!document.querySelectorAll(`[src="${url}"]`).length) {
+      const elNode = Object.assign(document.createElement('script'), {
+        type: 'text/javascript',
+        src: url,
+        async: true
+      });
+      document.body.appendChild(elNode);
+    }
   }
 
   private enablePageView() {
@@ -109,18 +100,26 @@ export class GtagService {
       },
       ...params
     };
-    try {
-      gtag('config', this.options.gtag.trackingId, params);
-    } catch (err) {
-      this.log.error('Failed to track page view', err);
+    if (typeof gtag === 'function') {
+      try {
+        gtag('config', this.options.gtag.trackingId, params);
+      } catch (err) {
+        this.log.error('Failed to track page view', err);
+      }
+    } else {
+      this.log.debug('skip page track. gtag not ready yet ...');
     }
   }
 
   trackEvent(name: string, params: GtagEventParams = {}) {
-    try {
-      gtag('event', name, params);
-    } catch (err) {
-      console.error('Failed to track event', err);
+    if (typeof gtag === 'function') {
+      try {
+        gtag('event', name, params);
+      } catch (err) {
+        console.error('Failed to track event', err);
+      }
+    } else {
+      this.log.debug('skip event track. gtag not ready yet ...');
     }
   }
 }
