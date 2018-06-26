@@ -38,14 +38,14 @@ describe('HomeComponent', () => {
 
   it('should create the @nwx/gtag', async(() => {
     const fixture = TestBed.createComponent(HomeComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    const home = fixture.debugElement.componentInstance;
+    expect(home).toBeTruthy();
   }));
 
   it(`should have as title '@nwx/gtag'`, async(() => {
     const fixture = TestBed.createComponent(HomeComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('@nwx/gtag');
+    const home = fixture.debugElement.componentInstance;
+    expect(home.title).toEqual('@nwx/gtag');
   }));
 
   it('should render title in a h1 tag', async(() => {
@@ -53,5 +53,17 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h1').textContent).toContain('Welcome to @nwx/gtag!');
+  }));
+
+  it('should load gtag script', async(() => {
+    const fixture = TestBed.createComponent(HomeComponent);
+    const options = fixture.debugElement.componentInstance.gtag.options.gtag;
+    expect(options.gtagUrl.length).toBeGreaterThan(0);
+    expect(options.trackingId).toContain('UA');
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    const url = `${options.gtagUrl}?id=${options.trackingId}`;
+    console.log(compiled)
+    // expect(compiled.querySelectorAll(`[src="${url}"]`).length).toEqual(1);
   }));
 });

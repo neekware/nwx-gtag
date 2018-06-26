@@ -14,7 +14,7 @@ export const environment: AppCfg = {
   },
   gtag: {
     // google tracking id (UA-XXXXX-Y)
-    trackingId: null,
+    trackingId: 'UA-123456-2',
     // track page view on start
     autoPageTrack: false
   }

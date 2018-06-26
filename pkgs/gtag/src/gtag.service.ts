@@ -34,8 +34,8 @@ export class GtagService {
   ) {
     this.options = merge({ gtag: DefaultGtagCfg }, cfg.options);
     if (this.options.gtag.trackingId) {
-      this.initScript().then(() => {
-        this.loadScript().then(() => {
+      this.loadScript().then(() => {
+        this.initScript().then(() => {
           log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
         });
       });
@@ -51,7 +51,7 @@ export class GtagService {
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '${this.options.GoogleAnalyticsId}', { 'send_page_view': ${
+        gtag('config', '${this.options.gtag.trackingId}', { 'send_page_view': ${
         this.options.gtag.autoPageTrack
       } });
       `;
@@ -65,7 +65,7 @@ export class GtagService {
 
   private loadScript(): Promise<any> {
     return new Promise(resolve => {
-      const url = `${this.options.gtagUrl}?id=${this.options.GoogleAnalyticsId}`;
+      const url = `${this.options.gtag.gtagUrl}?id=${this.options.gtag.trackingId}`;
       if (document.querySelectorAll(`[src="${url}"]`).length) {
         resolve();
       } else {
