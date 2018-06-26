@@ -72,6 +72,7 @@ export class GtagService {
         const elNode = Object.assign(document.createElement('script'), {
           type: 'text/javascript',
           src: url,
+          async: true,
           onload: resolve
         });
         document.body.appendChild(elNode);
