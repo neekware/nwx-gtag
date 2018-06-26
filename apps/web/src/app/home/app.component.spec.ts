@@ -14,7 +14,11 @@ import { HomeComponent } from './home.component';
 
 const AppEnv: AppCfg = {
   appName: '@nwx/gtag',
-  production: false
+  production: false,
+  gtag: {
+    trackingId: 'UA-123456-2',
+    autoPageTrack: false
+  }
 };
 
 describe('HomeComponent', () => {

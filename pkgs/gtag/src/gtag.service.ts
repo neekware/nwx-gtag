@@ -39,7 +39,7 @@ export class GtagService {
           log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
         });
       });
-      if (this.options.gtag.autoPageView) {
+      if (this.options.gtag.autoPageTrack) {
         this.enablePageView();
       }
     }
@@ -52,7 +52,7 @@ export class GtagService {
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '${this.options.GoogleAnalyticsId}', { 'send_page_view': ${
-        this.options.gtag.autoPageView
+        this.options.gtag.autoPageTrack
       } });
       `;
       const elNode = Object.assign(document.createElement('script'), {

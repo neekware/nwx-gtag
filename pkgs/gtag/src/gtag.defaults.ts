@@ -12,7 +12,7 @@ export const DefaultGtagCfg: GtagCfg = {
   // google tracking id (UA-XXXXX-Y)
   trackingId: null,
   // track page view on start
-  autoPageView: false,
+  autoPageTrack: false,
   // gtag.js url
   gtagUrl: 'https://www.googletagmanager.com/gtag/js'
 };

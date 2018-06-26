@@ -16,6 +16,6 @@ export const environment: AppCfg = {
     // google tracking id (UA-XXXXX-Y)
     trackingId: null,
     // track page view on start
-    autoPageView: false
+    autoPageTrack: false
   }
 };
