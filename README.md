@@ -79,7 +79,7 @@ export class AppComponent {
   constructor(public cfg: CfgService, public log: LogService, public gtag: GtagService) {
     this.title = this.cfg.options.appName;
     this.log.info('AppComponent loaded ...');
-    // all route changes are tracked automatically with gtag
+    // all route changes are tracked automatically from now on
   }
 }
 ```
@@ -104,21 +104,15 @@ export const environment: AppCfg = {
 ```
 
 ```typescript
-// In your app.module.ts
-@Component({
-  selector: 'app-root',
-  template: `<h1>Welcome to {{ title }}!</h1>`
-})
-export class AppComponent {
-  title = 'Neekware';
-  options = {};
-  constructor(public cfg: CfgService, public log: LogService, public gtag: GtagService) {
-    this.title = this.cfg.options.appName;
-    this.log.info('AppComponent loaded ...');
-    // automatic page view is disabled
-    // manual page view can be triggered with `gtag.trackPageView()`
-  }
-}
+// track page view manually with default options
+gtag.trackPageView();
+
+// or with specific options
+gtag.trackPageView({
+  page_title: 'Home Page',
+  page_path: '/',
+  page_location: 'http://neekware.com'
+});
 ```
 
 # Running the tests
