@@ -104,15 +104,20 @@ export const environment: AppCfg = {
 ```
 
 ```typescript
-// track page view manually with default options
-gtag.trackPageView();
-
-// or with specific options
+// track page view manually with specific options
 gtag.trackPageView({
   page_title: 'Home Page',
   page_path: '/',
   page_location: 'http://neekware.com'
 });
+
+// or with default options
+gtag.trackPageView();
+
+// where defaults are:
+// page_title = [some_route.data.title] | appName
+// page_path = router.url
+
 ```
 
 # Running the tests
