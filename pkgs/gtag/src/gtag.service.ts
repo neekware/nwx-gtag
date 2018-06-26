@@ -32,11 +32,11 @@ export class GtagService {
     private cfg: CfgService,
     private log: LogService
   ) {
-    this.options = merge({ gtag: DefaultGtagCfg }, cfg.options);
+    this.options = merge({ gtag: DefaultGtagCfg }, this.cfg.options);
     if (this.options.gtag.trackingId) {
       this.loadScript().then(() => {
         this.initScript().then(() => {
-          log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
+          this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
           if (this.options.gtag.autoPageTrack) {
             this.enablePageView();
           }
