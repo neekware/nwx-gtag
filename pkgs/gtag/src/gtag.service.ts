@@ -74,15 +74,15 @@ export class GtagService {
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
-        tap(event => {
-          this.trackPageView();
+        map(() => this.route),
+        map(route => route.firstChild),
+        switchMap(route => route.data),
+        map(data => get(data, 'title', this.options.appName)),
+        tap(title => {
+          this.trackPageView({ title });
         })
       )
       .subscribe();
-  }
-
-  private getTitle() {
-    return get(this.route.snapshot.data, 'title', this.options.appName);
   }
 
   trackPageView(params?: GtagPageViewParams) {
@@ -90,7 +90,7 @@ export class GtagService {
       ...{
         page_path: this.router.url,
         page_location: window.location.href,
-        page_title: this.getTitle()
+        page_title: this.options.appName
       },
       ...params
     };
