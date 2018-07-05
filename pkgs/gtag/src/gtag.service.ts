@@ -37,7 +37,7 @@ export class GtagService {
       this.loadScript();
       this.initScript();
       this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
-      if (this.options.gtag.autoPageTrack) {
+      if (this.options.gtag.routeChangeTracking) {
         this.enablePageView();
       }
     }
@@ -45,7 +45,7 @@ export class GtagService {
 
   private initScript() {
     const id = this.options.gtag.trackingId;
-    const enabled = this.options.gtag.autoPageTrack;
+    const enabled = this.options.gtag.routeChangeTracking;
     const tag = `
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

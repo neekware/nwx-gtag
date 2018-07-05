@@ -34,7 +34,7 @@ export const environment: AppCfg = {
     // google tracking ID for domain
     trackingId: 'UA-XXXXXX-Y',
     // track page view on start (on route changes)
-    autoPageTrack: true
+    routeChangeTracking: true
   }
 };
 ```
@@ -114,7 +114,7 @@ export const environment: AppCfg = {
     // google tracking ID for domain
     trackingId: 'UA-XXXXXX-Y',
     // track page view on start (on route change)
-    autoPageTrack: false
+    routeChangeTracking: false
   }
 };
 ```

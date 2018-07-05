@@ -12,7 +12,7 @@ export class GtagCfg {
   // google tracking id (UA-XXXXX-Y)
   trackingId: string;
   // track page view on start
-  autoPageTrack?: boolean;
+  routeChangeTrackinging?: boolean;
   // tracking gtag.js URL
   gtagUrl?: string;
   // more optional parameters
