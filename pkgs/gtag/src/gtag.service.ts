@@ -33,11 +33,11 @@ export class GtagService {
     private log: LogService
   ) {
     this.options = merge({ gtag: DefaultGtagCfg }, this.cfg.options);
-    if (this.options.gtag.trackingId) {
+    if (this.options.gtag.isEnabled && this.options.gtag.trackingId) {
       this.loadScript();
       this.initScript();
       this.log.debug(`GtagService ready ... (${this.options.gtag.trackingId})`);
-      if (this.options.gtag.autoPageTrack) {
+      if (this.options.gtag.routeChangeTracking) {
         this.enablePageView();
       }
     }
@@ -45,7 +45,7 @@ export class GtagService {
 
   private initScript() {
     const id = this.options.gtag.trackingId;
-    const enabled = this.options.gtag.autoPageTrack;
+    const enabled = this.options.gtag.routeChangeTracking;
     const tag = `
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -86,34 +86,38 @@ export class GtagService {
   }
 
   trackPageView(params?: GtagPageViewParams) {
-    params = {
-      ...{
-        page_path: this.router.url,
-        page_location: window.location.href,
-        page_title: this.options.appName
-      },
-      ...params
-    };
-    if (typeof gtag === 'function') {
-      try {
-        gtag('config', this.options.gtag.trackingId, params);
-      } catch (err) {
-        this.log.error('Failed to track page view', err);
+    if (this.options.gtag.isEnabled) {
+      params = {
+        ...{
+          page_path: this.router.url,
+          page_location: window.location.href,
+          page_title: this.options.appName
+        },
+        ...params
+      };
+      if (typeof gtag === 'function') {
+        try {
+          gtag('config', this.options.gtag.trackingId, params);
+        } catch (err) {
+          this.log.error('Failed to track page view', err);
+        }
+      } else {
+        this.log.debug('skip page track. gtag not ready yet ...');
       }
-    } else {
-      this.log.debug('skip page track. gtag not ready yet ...');
     }
   }
 
   trackEvent(name: string, params: GtagEventParams = {}) {
-    if (typeof gtag === 'function') {
-      try {
-        gtag('event', name, params);
-      } catch (err) {
-        console.error('Failed to track event', err);
+    if (this.options.gtag.isEnabled) {
+      if (typeof gtag === 'function') {
+        try {
+          gtag('event', name, params);
+        } catch (err) {
+          console.error('Failed to track event', err);
+        }
+      } else {
+        this.log.debug('skip event track. gtag not ready yet ...');
       }
-    } else {
-      this.log.debug('skip event track. gtag not ready yet ...');
     }
   }
 }

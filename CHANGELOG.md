@@ -1,3 +1,9 @@
+## 1.0.2
+
+Enhancement:
+
+  - Enable flag
+
 ## 1.0.1
 
 BugFix:
@@ -6,9 +12,9 @@ BugFix:
 
 ## 1.0.0
 
-BugFix:
+Enhancement:
 
-  - Route title
+  - Route title auto add
 
 ## 0.0.1
 

@@ -7,10 +7,12 @@
  */
 
 export class GtagCfg {
+  // ability to disable tracking (ex; dev / staging mode)
+  isEnabled: boolean;
   // google tracking id (UA-XXXXX-Y)
   trackingId: string;
   // track page view on start
-  autoPageTrack?: boolean;
+  routeChangeTracking?: boolean;
   // tracking gtag.js URL
   gtagUrl?: string;
   // more optional parameters

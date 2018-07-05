@@ -31,10 +31,12 @@ export const environment: AppCfg = {
     level: LogLevels.debug
   },
   gtag: {
+    // ability to disable tracking (ex; dev / staging mode)
+    isEnabled: true,
     // google tracking ID for domain
     trackingId: 'UA-XXXXXX-Y',
     // track page view on start (on route changes)
-    autoPageTrack: true
+    routeChangeTracking: true
   }
 };
 ```
@@ -111,10 +113,12 @@ export const environment: AppCfg = {
   appName: '@nwx/gtag',
   // ...
   gtag: {
+    // ability to disable tracking (ex; dev / staging mode)
+    isEnabled: true,
     // google tracking ID for domain
     trackingId: 'UA-XXXXXX-Y',
     // track page view on start (on route change)
-    autoPageTrack: false
+    routeChangeTracking: false
   }
 };
 ```

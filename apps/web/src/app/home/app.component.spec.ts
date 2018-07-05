@@ -17,7 +17,7 @@ const AppEnv: AppCfg = {
   production: false,
   gtag: {
     trackingId: 'UA-123456-2',
-    autoPageTrack: false
+    routeChangeTracking: false
   }
 };
 
