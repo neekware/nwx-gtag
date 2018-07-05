@@ -79,7 +79,7 @@ export class GtagService {
         switchMap(route => route.data),
         map(data => get(data, 'title', this.options.appName)),
         tap(title => {
-          this.trackPageView({ title });
+          this.trackPageView({ page_title: title });
         })
       )
       .subscribe();

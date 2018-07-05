@@ -1,3 +1,9 @@
+## 1.0.1
+
+BugFix:
+
+  - Route title
+
 ## 1.0.0
 
 BugFix:
