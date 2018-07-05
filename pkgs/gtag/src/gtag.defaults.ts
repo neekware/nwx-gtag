@@ -9,6 +9,8 @@
 import { GtagCfg } from './gtag.types';
 
 export const DefaultGtagCfg: GtagCfg = {
+  // ability to disable tracking (ex; dev / staging mode)
+  isEnabled: false,
   // google tracking id (UA-XXXXX-Y)
   trackingId: null,
   // track page view on start
