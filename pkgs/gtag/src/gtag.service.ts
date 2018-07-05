@@ -25,7 +25,6 @@ declare var gtag: Function;
 })
 export class GtagService {
   options: AppCfg = null;
-  isEnabled = false;
 
   constructor(
     private router: Router,
