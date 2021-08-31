@@ -1,3 +1,6 @@
+
+# Library was deprecated in favor of [`@fullerstack/ngx-config`](https://github.com/neekware/fullerstack/tree/main/libs/ngx-gtag)
+
 # @nwx/gtag
 
 **A simple GTAG module for Angular applications**
