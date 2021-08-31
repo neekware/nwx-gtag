@@ -1,5 +1,5 @@
 
-# Library was deprecated in favor of [`@fullerstack/ngx-config`](https://github.com/neekware/fullerstack/tree/main/libs/ngx-gtag)
+# Library was deprecated in favor of [`@fullerstack/ngx-gtag`](https://github.com/neekware/fullerstack/tree/main/libs/ngx-gtag)
 
 # @nwx/gtag
 
